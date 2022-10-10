@@ -5,19 +5,19 @@ import UserToken from "../models/userToken.model.js";
 
 export default {
   async register(req, res, next) {
+    const { username, email, password } = req.body;
+
     new User({
-      username: req.body.username,
-      email: req.body.email,
-      password: bcrypt.hashSync(req.body.password, 8),
+      username,
+      email,
+      password: bcrypt.hashSync(password, 8),
     }).save((err) => {
       if (err) {
-        console.log("Error", err);
-        res.status(500).send({ message: "Internal Server Error" });
-        return;
+        return next(err);
       }
 
       console.log("Successfully added user");
-      res.status(200).send({ message: "Authenticated" });
+      res.status(200).send({ message: "User created" });
     });
   },
 

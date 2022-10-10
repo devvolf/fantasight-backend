@@ -7,8 +7,8 @@ const User = mongoose.model(
     {
       username: {
         type: String,
-        min: [6, "Username too short"],
-        max: 50,
+        minLength: [6, "Username too short"],
+        maxLength: [50, "Username too long"],
         required: [true, "Username is required"],
         unique: true,
       },

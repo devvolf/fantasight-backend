@@ -7,28 +7,28 @@ export const verifyRegistrationDuplicateUsernameOrEmail = (req, res, next) => {
   User.findOne({ username }).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
-      return;
+      return next();
     }
 
     if (user) {
-      res.status(400).send({ message: "Username already in use" });
-      return;
+      res.status(400).send({ username: "Username already in use" });
+      return next();
+    }
+  });
+
+  User.findOne({ email }).exec((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return next();
     }
 
-    User.findOne({ email }).exec((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
-
-      if (user) {
-        res.status(400).send({ message: "Email already in use" });
-        return;
-      }
-    });
-
-    next();
+    if (user) {
+      res.status(400).send({ email: "Email already in use" });
+      return next();
+    }
   });
+
+  return next();
 };
 
 export const verifyRegistrationPassword = (req, res, next) => {
@@ -44,5 +44,5 @@ export const verifyRegistrationPassword = (req, res, next) => {
     return;
   }
 
-  next();
+  return next();
 };

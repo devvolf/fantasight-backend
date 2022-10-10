@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import connectToDatabase from "./configs/database.js";
 import auth from "./routes/auth.routes.js";
+import { catchErrors } from "./middlewares/errors.js";
 
 const runApp = async () => {
   console.log("Starting app...");
@@ -17,11 +18,13 @@ const runApp = async () => {
   };
 
   app.use(cors(corsOptions));
-
+  app.use(express.static("public"));
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 
   app.use("/auth", auth());
+  app.use(catchErrors);
+
 
   app.listen(port, () => {
     console.log(`App started, listening on port ${port}`);
