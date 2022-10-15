@@ -4,7 +4,7 @@ import User from "../models/user.model.js";
 import UserToken from "../models/userToken.model.js";
 
 export default {
-  async register(req, res, next) {
+  register: async (req, res, next) => {
     const { username, email, password } = req.body;
 
     new User({
@@ -21,7 +21,7 @@ export default {
     });
   },
 
-  async login(req, res, next) {
+  login: async (req, res, next) => {
     const { username, password } = req.body;
 
     User.findOne({ username }).exec((err, user) => {
@@ -87,7 +87,7 @@ export default {
     });
   },
 
-  async token(req, res, next) {
+  token: async (req, res, next) => {
     const refreshToken = req.body.token;
 
     if (!refreshToken) {
@@ -131,7 +131,7 @@ export default {
     );
   },
 
-  async logout(req, res, next) {
+  logout: (req, res, next) => {
     const refreshToken = req.body.token;
 
     UserToken.remove({ refresh_token: refreshToken }).exec((err) => {

@@ -7,24 +7,24 @@ export const verifyRegistrationDuplicateUsernameOrEmail = (req, res, next) => {
   User.findOne({ username }).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
-      return next();
+      return;
     }
 
     if (user) {
       res.status(400).send({ username: "Username already in use" });
-      return next();
+      return;
     }
   });
 
   User.findOne({ email }).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
-      return next();
+      return;
     }
 
     if (user) {
       res.status(400).send({ email: "Email already in use" });
-      return next();
+      return;
     }
   });
 

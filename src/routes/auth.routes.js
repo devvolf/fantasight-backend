@@ -4,7 +4,7 @@ import AuthController from "../controllers/authController.js";
 import {
   verifyRegistrationPassword,
   verifyRegistrationDuplicateUsernameOrEmail,
-} from "../middlewares/verifyRegistration.js";
+} from "../middlewares/authValidation.js";
 
 export default () => {
   const router = Router();
