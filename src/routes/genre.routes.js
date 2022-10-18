@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/errors.js";
-import GenreController from "../controllers/genreController.js";
-import { verifyDuplicateGenreName } from "../middlewares/genreValidation.js";
+import GenreController from "../controllers/genre.controller.js";
+import { verifyDuplicateGenreName } from "../middlewares/genre.middleware.js";
 
 export default () => {
   const router = Router();

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/errors.js";
-import CharacteristicController from "../controllers/characteristicController.js";
-import { verifyDuplicateCharacteristicName } from "../middlewares/characteristicValidation.js";
+import CharacteristicController from "../controllers/characteristic.controller.js";
+import { verifyDuplicateCharacteristicName } from "../middlewares/characteristic.middleware.js";
 
 export default () => {
   const router = Router();

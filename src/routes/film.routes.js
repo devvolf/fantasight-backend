@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/errors.js";
-import FilmController from "../controllers/filmController.js";
+import FilmController from "../controllers/film.controller.js";
 
 export default () => {
   const router = Router();

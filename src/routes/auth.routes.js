@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/errors.js";
-import AuthController from "../controllers/authController.js";
+import AuthController from "../controllers/auth.controller.js";
 import {
   verifyRegistrationPassword,
   verifyRegistrationDuplicateUsernameOrEmail,
-} from "../middlewares/authValidation.js";
+} from "../middlewares/auth.middleware.js";
 
 export default () => {
   const router = Router();
