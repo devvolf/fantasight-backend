@@ -6,12 +6,8 @@ import upload from "../middlewares/storage.middleware.js";
 export default () => {
   const router = Router();
 
-  // router.get("/images/:id", catchAsync(StorageController));
-  router.post(
-    "/images",
-    upload.single("file"),
-    catchAsync(StorageController.uploadImage)
-  );
+  router.get("/images/:id", catchAsync(StorageController.getImage));
+  router.post("/images", upload, catchAsync(StorageController.uploadImage));
 
   return router;
 };
