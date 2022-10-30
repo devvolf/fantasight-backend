@@ -18,7 +18,7 @@ const Genre = mongoose.model(
     {
       timestamps: true, // created_at / updated_at
     }
-  )
+  ).index({ name: "text" })
 );
 
 export default Genre;

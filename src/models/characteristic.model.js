@@ -18,7 +18,7 @@ const Characteristic = mongoose.model(
     {
       timestamps: true, // created_at / updated_at
     }
-  )
+  ).index({ name: "text" })
 );
 
 export default Characteristic;

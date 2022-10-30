@@ -9,17 +9,16 @@ import genre from "./routes/genre.routes.js";
 import characteristic from "./routes/characteristic.routes.js";
 import storage from "./routes/storage.routes.js";
 import { catchErrors } from "./middlewares/errors.js";
-import _ from "lodash";
+import serverConfig from "./configs/server.config.js";
 
 const runApp = async () => {
   console.log("Starting app...");
   await dbConfig.connectToDatabase();
 
   const app = express();
-  const port = 3000;
 
   const corsOptions = {
-    origin: `http://localhost:${port}`,
+    origin: serverConfig.url,
   };
 
   app.use(cors(corsOptions));
@@ -34,8 +33,8 @@ const runApp = async () => {
   app.use("/films", film());
   app.use(catchErrors);
 
-  app.listen(port, () => {
-    console.log(`App started, listening on port ${port}`);
+  app.listen(serverConfig.port, () => {
+    console.log(`App started, listening on port ${serverConfig.port}`);
   });
 };
 

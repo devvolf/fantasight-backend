@@ -11,7 +11,7 @@ const Film = mongoose.model(
       },
       description: {
         type: String,
-        minLength: [1, "Title too short"],
+        minLength: [1, "Description too short"],
         required: [true, "Description is required"],
       },
       year: {
@@ -33,12 +33,11 @@ const Film = mongoose.model(
           ref: "Characteristic",
         },
       ],
-      
     },
     {
       timestamps: true, // created_at / updated_at
     }
-  )
+  ).index({ title: "text" })
 );
 
 export default Film;
