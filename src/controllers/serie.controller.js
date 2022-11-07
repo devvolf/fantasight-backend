@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
-import Film from "../models/film.model.js";
+import Serie from "../models/serie.model.js";
+import SerieEpisode from "../models/serieEpisode.model.js";
 import imagesService from "../services/images.service.js";
 import watchablesService from "../services/watchables.service.js";
 import { WatchableTypes } from "../utils/consts.js";
@@ -12,15 +13,22 @@ export default {
       searchText,
       genreIds,
       characteristicIds,
-      WatchableTypes.Film
+      WatchableTypes.Serie
     );
 
     res.status(200).send(results);
   },
 
   add: async (req, res, next) => {
-    const { title, description, year, genreIds, characteristicIds, imageId } =
-      req.body;
+    const {
+      title,
+      description,
+      year,
+      genreIds,
+      characteristicIds,
+      imageId,
+      episodes,
+    } = req.body;
 
     let posterUrl;
 
@@ -39,19 +47,27 @@ export default {
       characteristics = characteristicIds.map((it) => new Types.ObjectId(it));
     }
 
-    new Film({
+    const episodePromises = episodes.map((it) =>
+      new SerieEpisode({ title: it.title, description: it.description }).save()
+    );
+
+    const savedEpisodes = await Promise.all([...episodePromises]);
+    const savedEpisodesIds = savedEpisodes.map((it) => it._id);
+
+    new Serie({
       title,
       description,
       year,
       posterUrl,
       genres,
       characteristics,
+      episodes: savedEpisodesIds,
     }).save((err) => {
       if (err) {
         return next(err);
       }
 
-      res.status(200).send({ message: "Film created" });
+      res.status(200).send({ message: "Serie created" });
     });
   },
 
@@ -78,17 +94,17 @@ export default {
       characteristics = characteristicIds.map((it) => new Types.ObjectId(it));
     }
 
-    Film.findById(new Types.ObjectId(id)).exec((err, film) => {
+    Serie.findById(new Types.ObjectId(id)).exec((err, serie) => {
       if (err) {
         return next(err);
       }
 
-      if (!film) {
-        res.status(404).send({ message: "Film not found" });
+      if (!serie) {
+        res.status(404).send({ message: "Serie not found" });
         return;
       }
 
-      film
+      serie
         .update({
           title,
           description,
@@ -102,7 +118,7 @@ export default {
             return next(err);
           }
 
-          res.status(200).send({ message: "Film updated" });
+          res.status(200).send({ message: "Serie updated" });
         });
     });
   },
@@ -110,22 +126,22 @@ export default {
   delete: async (req, res, next) => {
     const { id } = req.params;
 
-    Film.findById(id).exec((err, film) => {
+    Serie.findById(id).exec((err, serie) => {
       if (err) {
         return next(err);
       }
 
-      if (!film) {
-        res.status(404).send({ message: "Film not found" });
+      if (!serie) {
+        res.status(404).send({ message: "Serie not found" });
         return;
       }
 
-      film.remove((err) => {
+      serie.remove((err) => {
         if (err) {
           return next(err);
         }
 
-        res.status(204).send({ message: "Film deleted" });
+        res.status(204).send({ message: "Serie deleted" });
       });
     });
   },
