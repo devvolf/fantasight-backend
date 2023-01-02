@@ -14,6 +14,10 @@ const SerieEpisode = mongoose.model(
         minLength: [1, "Description too short"],
         required: [true, "Description is required"],
       },
+      seasonIndex: {
+        type: Number,
+        required: [true, "Season index is required"],
+      },
       posterUrl: {
         type: String,
       },

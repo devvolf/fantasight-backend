@@ -16,7 +16,6 @@ export default {
         return next(err);
       }
 
-      console.log("Successfully added user");
       res.status(200).send({ message: "User created" });
     });
   },

@@ -1,4 +1,9 @@
 import multer from "multer";
 import dbConfig from "../configs/database.config.js";
 
-export default multer({ storage: dbConfig.imagesStorage }).single('file');
+export const uploadImages = multer({ storage: dbConfig.imagesStorage }).array(
+  "files"
+);
+export const uploadVideos = multer({ storage: dbConfig.videosStorage }).array(
+  "files"
+);

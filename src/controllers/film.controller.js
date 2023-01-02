@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import Film from "../models/film.model.js";
 import imagesService from "../services/images.service.js";
+import videosService from "../services/videos.service.js";
 import watchablesService from "../services/watchables.service.js";
 import { WatchableTypes } from "../utils/consts.js";
 
@@ -19,14 +20,19 @@ export default {
   },
 
   add: async (req, res, next) => {
-    const { title, description, year, genreIds, characteristicIds, imageId } =
-      req.body;
+    const {
+      title,
+      description,
+      year,
+      genreIds,
+      characteristicIds,
+      imageId,
+      videoId,
+    } = req.body;
 
-    let posterUrl;
+    const posterUrl = await imagesService.getImageUrlById(imageId);
 
-    if (imageId) {
-      posterUrl = await imagesService.getImageUrlById(imageId);
-    }
+    const streamUrl = await videosService.getVideoUrlById(videoId);
 
     let genres;
     let characteristics;
@@ -46,6 +52,7 @@ export default {
       posterUrl,
       genres,
       characteristics,
+      streamUrl,
     }).save((err) => {
       if (err) {
         return next(err);
@@ -56,15 +63,27 @@ export default {
   },
 
   update: async (req, res, next) => {
-    const { title, description, year, genreIds, characteristicIds, imageId } =
-      req.body;
+    const {
+      title,
+      description,
+      year,
+      genreIds,
+      characteristicIds,
+      imageId,
+      videoId,
+    } = req.body;
 
     const { id } = req.params;
 
     let posterUrl;
+    let streamUrl;
 
     if (imageId) {
       posterUrl = await imagesService.getImageUrlById(imageId);
+    }
+
+    if (videoId) {
+      streamUrl = await videosService.getVideoUrlById(videoId);
     }
 
     let genres;
@@ -96,6 +115,7 @@ export default {
           posterUrl,
           genres,
           characteristics,
+          streamUrl,
         })
         .exec((err) => {
           if (err) {

@@ -2,6 +2,33 @@ import Genre from "../models/genre.model.js";
 
 export default {
   getAll: async (req, res, next) => {
+    const { searchText } = req.query;
+
+    if (searchText) {
+      const regex = new RegExp(`${searchText}`, "i");
+      Genre.find({
+        $or: [
+          {
+            name: {
+              $regex: regex,
+            },
+          },
+          {
+            description: {
+              $regex: regex,
+            },
+          },
+        ],
+      }).exec((err, genres) => {
+        if (err) {
+          return next(err);
+        }
+
+        res.status(200).send(genres);
+      });
+      return;
+    }
+
     Genre.find({}).exec((err, genres) => {
       if (err) {
         return next(err);

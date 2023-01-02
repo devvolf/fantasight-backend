@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import Serie from "../models/serie.model.js";
 import SerieEpisode from "../models/serieEpisode.model.js";
 import imagesService from "../services/images.service.js";
+import videosService from "../services/videos.service.js";
 import watchablesService from "../services/watchables.service.js";
 import { WatchableTypes } from "../utils/consts.js";
 
@@ -26,14 +27,14 @@ export default {
       year,
       genreIds,
       characteristicIds,
-      imageId,
+      posterImageId,
       episodes,
     } = req.body;
 
     let posterUrl;
 
-    if (imageId) {
-      posterUrl = await imagesService.getImageUrlById(imageId);
+    if (posterImageId) {
+      posterUrl = await imagesService.getImageUrlById(posterImageId);
     }
 
     let genres;
@@ -47,9 +48,27 @@ export default {
       characteristics = characteristicIds.map((it) => new Types.ObjectId(it));
     }
 
-    const episodePromises = episodes.map((it) =>
-      new SerieEpisode({ title: it.title, description: it.description }).save()
-    );
+    const episodePromises = [];
+
+    for (let i = 0; i < episodes.length; i++) {
+      const episode = episodes[i];
+      const episodePosterUrl = await imagesService.getImageUrlById(
+        episode.posterImageId
+      );
+      const episodeStreamUrl = await videosService.getVideoUrlById(
+        episode.videoId
+      );
+
+      episodePromises.push(
+        new SerieEpisode({
+          title: episode.title,
+          description: episode.description,
+          seasonIndex: episode.seasonIndex,
+          posterUrl: episodePosterUrl,
+          streamUrl: episodeStreamUrl,
+        }).save()
+      );
+    }
 
     const savedEpisodes = await Promise.all([...episodePromises]);
     const savedEpisodesIds = savedEpisodes.map((it) => it._id);

@@ -44,6 +44,8 @@ export default () => {
 
   // Watchables endpoints.
   router.get("", catchAsync(watchableController.getAll));
+  router.delete("/:id", catchAsync(watchableController.delete));
+
 
   // Films endpoints.
   router.get("/films", catchAsync(FilmController.getAll));

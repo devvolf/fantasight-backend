@@ -12,13 +12,12 @@ const Genre = mongoose.model(
       },
       description: {
         type: String,
-        minLength: [1, "Description too short"],
       },
     },
     {
       timestamps: true, // created_at / updated_at
     }
-  ).index({ name: "text" })
+  ).index({ name: "text", description: "text" })
 );
 
 export default Genre;

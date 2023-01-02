@@ -6,6 +6,7 @@ const Film = Watchable.discriminator(
   new mongoose.Schema({
     streamUrl: {
       type: String,
+      required: [true, "Video is required"],
     },
   }).index({ title: "text" })
 );

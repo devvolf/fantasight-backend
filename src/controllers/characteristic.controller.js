@@ -2,6 +2,33 @@ import Characteristic from "../models/characteristic.model.js";
 
 export default {
   getAll: async (req, res, next) => {
+    const { searchText } = req.query;
+
+    if (searchText) {
+      const regex = new RegExp(`${searchText}`, "i");
+      Characteristic.find({
+        $or: [
+          {
+            name: {
+              $regex: regex,
+            },
+          },
+          {
+            description: {
+              $regex: regex,
+            },
+          },
+        ],
+      }).exec((err, characteristics) => {
+        if (err) {
+          return next(err);
+        }
+
+        res.status(200).send(characteristics);
+      });
+      return;
+    }
+
     Characteristic.find({}).exec((err, characteristics) => {
       if (err) {
         return next(err);
