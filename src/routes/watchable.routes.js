@@ -51,12 +51,12 @@ export default () => {
   router.get("/films", catchAsync(FilmController.getAll));
   router.post("/films", catchAsync(FilmController.add));
   router.put("/films/:id", catchAsync(FilmController.update));
-  router.delete("/films/:id", catchAsync(FilmController.delete));
+  // router.delete("/films/:id", catchAsync(FilmController.delete));
 
   // Series endpoints.
   router.get("/series", catchAsync(SerieController.getAll));
   router.post("/series", catchAsync(SerieController.add));
-  // router.put("/series/:id", catchAsync(SerieController.update));
+  router.put("/series/:id", catchAsync(SerieController.update));
   // router.delete("/series/:id", catchAsync(SerieController.delete));
 
   return router;

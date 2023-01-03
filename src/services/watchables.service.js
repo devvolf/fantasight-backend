@@ -18,6 +18,12 @@ const searchTextWatchables = async (searchText) => {
 
   const titleKeywordWatchables = await getWatchablesByTitleKeyword(searchText);
 
+  console.log({
+    genreKeywordWatchables,
+    characteristicKeywordWatchables,
+    titleKeywordWatchables,
+  });
+
   results = new Set([...results, ...titleKeywordWatchables]);
 
   return Array.from(results);
@@ -62,10 +68,20 @@ const getWatchablesByCharacteristicKeyword = async (searchText) => {
 };
 
 const getWatchablesByTitleKeyword = async (searchText) => {
+  const regex = new RegExp(`${searchText}`, "i");
   return await Watchable.find({
-    $text: {
-      $search: searchText,
-    },
+    $or: [
+      {
+        title: {
+          $regex: regex,
+        },
+      },
+      {
+        description: {
+          $regex: regex,
+        },
+      },
+    ],
   })
     .populate("genres")
     .populate("characteristics");

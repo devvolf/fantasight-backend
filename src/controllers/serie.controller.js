@@ -91,7 +91,7 @@ export default {
   },
 
   update: async (req, res, next) => {
-    const { title, description, year, genreIds, characteristicIds, imageId } =
+    const { title, description, year, genreIds, characteristicIds, imageId, episodes } =
       req.body;
 
     const { id } = req.params;

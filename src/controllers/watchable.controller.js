@@ -3,7 +3,8 @@ import Watchable from "../models/watchable.model.js";
 
 export default {
   getAll: async (req, res, next) => {
-    const { searchText, genreIds, characteristicIds } = req.body;
+    const { genreIds, characteristicIds } = req.body;
+    const { searchText } = req.query;
 
     const results = await watchablesService.getAll(
       searchText,

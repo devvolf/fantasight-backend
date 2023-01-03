@@ -8,7 +8,7 @@ const Film = Watchable.discriminator(
       type: String,
       required: [true, "Video is required"],
     },
-  }).index({ title: "text" })
+  })
 );
 
 export default Film;

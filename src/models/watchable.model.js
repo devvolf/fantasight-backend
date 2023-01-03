@@ -38,7 +38,7 @@ const Watchable = mongoose.model(
       discriminatorKey: "type",
       timestamps: true, // created_at / updated_at
     }
-  ).index({ title: "text" })
+  ).index({ title: "text", description: "text" })
 );
 
 export default Watchable;

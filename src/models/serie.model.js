@@ -10,7 +10,7 @@ const Serie = Watchable.discriminator(
         ref: "SerieEpisode",
       },
     ],
-  }).index({ title: "text" })
+  })
 );
 
 export default Serie;
