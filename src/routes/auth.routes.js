@@ -17,6 +17,8 @@ export default () => {
 
   router.post("/login", catchAsync(AuthController.login));
 
+  router.post("/admin/login", catchAsync(AuthController.adminLogin));
+
   router.post("/token", catchAsync(AuthController.token));
 
   router.delete("/logout", catchAsync(AuthController.logout));

@@ -4,7 +4,7 @@ import { Types } from "mongoose";
 export default {
   uploadImages: async (req, res, next) => {
     try {
-      console.log(req.files);
+      // console.log(req.files);
     } catch (err) {
       console.error(err);
       return;
@@ -48,7 +48,7 @@ export default {
   },
   uploadVideos: async (req, res, next) => {
     try {
-      console.log(req.files);
+      // console.log(req.files);
     } catch (err) {
       console.error(err);
       return;

@@ -18,12 +18,6 @@ const searchTextWatchables = async (searchText) => {
 
   const titleKeywordWatchables = await getWatchablesByTitleKeyword(searchText);
 
-  console.log({
-    genreKeywordWatchables,
-    characteristicKeywordWatchables,
-    titleKeywordWatchables,
-  });
-
   results = new Set([...results, ...titleKeywordWatchables]);
 
   return Array.from(results);

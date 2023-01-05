@@ -8,6 +8,7 @@ import watchable from "./routes/watchable.routes.js";
 import storage from "./routes/storage.routes.js";
 import { catchErrors } from "./middlewares/errors.js";
 import serverConfig from "./configs/server.config.js";
+import { initializeAdmin } from "./services/auth.service.js";
 
 const runApp = async () => {
   console.log("Starting app...");
@@ -16,7 +17,7 @@ const runApp = async () => {
   const app = express();
 
   const corsOptions = {
-    origin: serverConfig.url,
+    origin: "http://localhost:4200",
   };
 
   app.use(cors(corsOptions));
@@ -28,6 +29,8 @@ const runApp = async () => {
   app.use("/watchables", watchable());
   app.use("/storage", storage());
   app.use(catchErrors);
+
+  initializeAdmin();
 
   app.listen(serverConfig.port, () => {
     console.log(`App started, listening on port ${serverConfig.port}`);

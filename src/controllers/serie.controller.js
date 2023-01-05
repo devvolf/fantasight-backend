@@ -91,15 +91,22 @@ export default {
   },
 
   update: async (req, res, next) => {
-    const { title, description, year, genreIds, characteristicIds, imageId, episodes } =
-      req.body;
+    const {
+      title,
+      description,
+      year,
+      genreIds,
+      characteristicIds,
+      posterImageId,
+      episodes,
+    } = req.body;
 
     const { id } = req.params;
 
     let posterUrl;
 
-    if (imageId) {
-      posterUrl = await imagesService.getImageUrlById(imageId);
+    if (posterImageId) {
+      posterUrl = await imagesService.getImageUrlById(posterImageId);
     }
 
     let genres;
@@ -113,7 +120,61 @@ export default {
       characteristics = characteristicIds.map((it) => new Types.ObjectId(it));
     }
 
-    Serie.findById(new Types.ObjectId(id)).exec((err, serie) => {
+    console.log("episodes", episodes);
+
+    const episodesPromises = [];
+
+    for (let i = 0; i < episodes.length; i++) {
+      const episode = episodes[i];
+      console.log("ep", episode);
+
+      let episodePosterUrl;
+      let episodeStreamUrl;
+
+      if (episode.posterImageId) {
+        episodePosterUrl = await imagesService.getImageUrlById(
+          episode.posterImageId
+        );
+      }
+
+      if (episode.videoId) {
+        episodeStreamUrl = await videosService.getVideoUrlById(episode.videoId);
+      }
+
+      if (episode.id) {
+        episodesPromises.push(
+          SerieEpisode.findById(new Types.ObjectId(episode.id)).then(
+            (foundEpisode) => {
+              if (foundEpisode) {
+                foundEpisode
+                  .update({
+                    title: episode.title,
+                    description: episode.description,
+                    seasonIndex: episode.seasonIndex,
+                    posterUrl: episodePosterUrl,
+                    streamUrl: episodeStreamUrl,
+                  })
+                  .exec();
+              }
+
+              return foundEpisode;
+            }
+          )
+        );
+      } else {
+        episodesPromises.push(
+          new SerieEpisode({
+            title: episode.title,
+            description: episode.description,
+            seasonIndex: episode.seasonIndex,
+            posterUrl: episodePosterUrl,
+            streamUrl: episodeStreamUrl,
+          }).save()
+        );
+      }
+    }
+
+    await Serie.findById(new Types.ObjectId(id)).exec(async (err, serie) => {
       if (err) {
         return next(err);
       }
@@ -123,6 +184,9 @@ export default {
         return;
       }
 
+      const updatedEpisodes = await Promise.all([...episodesPromises]);
+      const savedEpisodesIds = updatedEpisodes.map((it) => it._id);
+
       serie
         .update({
           title,
@@ -131,8 +195,9 @@ export default {
           posterUrl,
           genres,
           characteristics,
+          episodes: savedEpisodesIds,
         })
-        .exec((err) => {
+        .exec(async (err) => {
           if (err) {
             return next(err);
           }

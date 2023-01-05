@@ -7,7 +7,7 @@ const User = mongoose.model(
     {
       username: {
         type: String,
-        minLength: [6, "Username too short"],
+        minLength: [5, "Username too short"],
         maxLength: [50, "Username too long"],
         required: [true, "Username is required"],
         unique: true,
@@ -18,12 +18,16 @@ const User = mongoose.model(
         unique: true,
         validate: {
           validator: (value) => EMAIL_REGEX.test(value),
-          message: "Email format invalid"
-        }
+          message: "Email format invalid",
+        },
       },
       password: {
         type: String,
         required: [true, "Password is required"],
+      },
+      role: {
+        type: String,
+        required: [true, "Role is required"],
       },
     },
     {

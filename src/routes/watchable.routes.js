@@ -7,6 +7,10 @@ import { verifyDuplicateCharacteristicName } from "../middlewares/characteristic
 import watchableController from "../controllers/watchable.controller.js";
 import FilmController from "../controllers/film.controller.js";
 import SerieController from "../controllers/serie.controller.js";
+import {
+  validateToken,
+  validateAdminAccess,
+} from "../middlewares/auth.middleware.js";
 
 export default () => {
   const router = Router();
@@ -43,9 +47,12 @@ export default () => {
   );
 
   // Watchables endpoints.
-  router.get("", catchAsync(watchableController.getAll));
+  router.get(
+    "",
+    [validateToken, validateAdminAccess],
+    catchAsync(watchableController.getAll)
+  );
   router.delete("/:id", catchAsync(watchableController.delete));
-
 
   // Films endpoints.
   router.get("/films", catchAsync(FilmController.getAll));
