@@ -82,7 +82,13 @@ export default {
             });
         });
 
-        res.status(200).send({ accessToken, refreshToken });
+        const userData = {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+        };
+
+        res.status(200).send({ accessToken, refreshToken, user: userData });
       }
     });
   },
@@ -148,7 +154,13 @@ export default {
             });
         });
 
-        res.status(200).send({ accessToken, refreshToken });
+        const userData = {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+        };
+
+        res.status(200).send({ accessToken, refreshToken, user: userData });
       }
     });
   },
@@ -197,7 +209,7 @@ export default {
     );
   },
 
-  logout: (req, res, next) => {
+  logout: async (req, res, next) => {
     const refreshToken = req.body.token;
 
     UserToken.remove({ refresh_token: refreshToken }).exec((err) => {
@@ -210,6 +222,33 @@ export default {
     });
 
     res.status(204).send({ message: "Logged out" });
+  },
+
+  changePassword: async (req, res, next) => {
+    const { id, password } = req.body;
+
+    User.findById(id).exec((err, user) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      if (!user) {
+        res.status(404).send({ message: "User not found" });
+
+        return;
+      }
+
+      const newPassword = bcrypt.hashSync(password, 8);
+
+      user.update({ password: newPassword }).exec((err) => {
+        if (err) {
+          res.status(500).send({ message: "Something went wrong" });
+        }
+
+        res.status(200).send({ message: "Password updated" });
+      });
+    });
   },
 };
 

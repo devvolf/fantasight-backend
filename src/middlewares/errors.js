@@ -26,7 +26,6 @@ export const catchErrors = (err, req, res, next) => {
     return next();
   }
 
-  console.error(err);
   res.status(500);
   res.send({
     message: "Something went wrong",

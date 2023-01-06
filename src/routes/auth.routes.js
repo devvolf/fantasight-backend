@@ -23,5 +23,8 @@ export default () => {
 
   router.delete("/logout", catchAsync(AuthController.logout));
 
+  router.post("/change-password", catchAsync(AuthController.changePassword));
+
+
   return router;
 };

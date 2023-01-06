@@ -120,13 +120,10 @@ export default {
       characteristics = characteristicIds.map((it) => new Types.ObjectId(it));
     }
 
-    console.log("episodes", episodes);
-
     const episodesPromises = [];
 
     for (let i = 0; i < episodes.length; i++) {
       const episode = episodes[i];
-      console.log("ep", episode);
 
       let episodePosterUrl;
       let episodeStreamUrl;
