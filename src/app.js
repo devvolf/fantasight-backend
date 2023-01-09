@@ -6,6 +6,7 @@ import dbConfig from "./configs/database.config.js";
 import auth from "./routes/auth.routes.js";
 import watchable from "./routes/watchable.routes.js";
 import storage from "./routes/storage.routes.js";
+import client from "./routes/client.routes.js";
 import { catchErrors } from "./middlewares/errors.js";
 import serverConfig from "./configs/server.config.js";
 import { initializeAdmin } from "./services/auth.service.js";
@@ -28,6 +29,8 @@ const runApp = async () => {
   app.use("/auth", auth());
   app.use("/watchables", watchable());
   app.use("/storage", storage());
+  app.use("/client", client());
+
   app.use(catchErrors);
 
   initializeAdmin();

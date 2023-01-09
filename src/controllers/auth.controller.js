@@ -166,7 +166,7 @@ export default {
   },
 
   token: async (req, res, next) => {
-    const refreshToken = req.body.token;
+    const { refreshToken } = req.body;
 
     if (!refreshToken) {
       return res.sendStatus(401);
@@ -180,7 +180,7 @@ export default {
         }
 
         if (!userToken) {
-          res.status(401).send({ message: "Unauthenticated" });
+          res.status(401).send({ message: "Unauthorized" });
           return;
         }
 
@@ -189,7 +189,7 @@ export default {
           process.env.REFRESH_TOKEN_SECRET,
           (error, user) => {
             if (error) {
-              res.status(401);
+              res.status(401).send({ message: "Unauthorized" });
             }
 
             const accessToken = generateAccessToken(user.id, user.role);
@@ -210,7 +210,7 @@ export default {
   },
 
   logout: async (req, res, next) => {
-    const refreshToken = req.body.token;
+    const { refreshToken } = req.body;
 
     UserToken.remove({ refresh_token: refreshToken }).exec((err) => {
       if (err) {
@@ -226,6 +226,26 @@ export default {
 
   changePassword: async (req, res, next) => {
     const { id, password } = req.body;
+    const { authorization } = req.headers;
+
+    const accessToken = authorization.split(" ")[1];
+
+    if (!accessToken) {
+      res.status(401).send({ message: "Unauthorized" });
+      return;
+    }
+
+    const payload = jwt.decode(accessToken);
+
+    if (!payload) {
+      res.status(401).send({ message: "Unauthorized" });
+      return;
+    }
+
+    if (payload.id !== id) {
+      res.status(401).send({ message: "Unauthorized" });
+      return;
+    }
 
     User.findById(id).exec((err, user) => {
       if (err) {
@@ -254,7 +274,7 @@ export default {
 
 const generateAccessToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "20s",
+    expiresIn: "10s",
   });
 };
 

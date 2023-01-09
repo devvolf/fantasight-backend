@@ -5,6 +5,10 @@ import {
   uploadImages,
   uploadVideos,
 } from "../middlewares/storage.middleware.js";
+import {
+  validateAdminAccess,
+  validateToken,
+} from "../middlewares/auth.middleware.js";
 
 export default () => {
   const router = Router();
@@ -12,14 +16,14 @@ export default () => {
   router.get("/images/:id", catchAsync(StorageController.getImage));
   router.post(
     "/images",
-    uploadImages,
+    [validateToken, validateAdminAccess, uploadImages],
     catchAsync(StorageController.uploadImages)
   );
 
   router.get("/videos/:id", catchAsync(StorageController.getVideo));
   router.post(
     "/videos",
-    uploadVideos,
+    [validateToken, validateAdminAccess, uploadVideos],
     catchAsync(StorageController.uploadVideos)
   );
 

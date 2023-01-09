@@ -16,55 +16,94 @@ export default () => {
   const router = Router();
 
   // Genres endpoints.
-  router.get("/genres", catchAsync(GenreController.getAll));
+  router.get(
+    "/genres",
+    [validateToken, validateAdminAccess],
+    catchAsync(GenreController.getAll)
+  );
   router.post(
     "/genres",
-    [verifyDuplicateGenreName],
+    [validateToken, validateAdminAccess, verifyDuplicateGenreName],
     catchAsync(GenreController.add)
   );
   router.put(
     "/genres/:id",
-    [verifyDuplicateGenreName],
+    [validateToken, validateAdminAccess, verifyDuplicateGenreName],
     catchAsync(GenreController.update)
   );
-  router.delete("/genres/:id", catchAsync(GenreController.delete));
+  router.delete(
+    "/genres/:id",
+    [validateToken, validateAdminAccess],
+    catchAsync(GenreController.delete)
+  );
 
   // Characteristics endpoints.
-  router.get("/characteristics", catchAsync(CharacteristicController.getAll));
+  router.get(
+    "/characteristics",
+    [validateToken, validateAdminAccess],
+    catchAsync(CharacteristicController.getAll)
+  );
   router.post(
     "/characteristics",
-    [verifyDuplicateCharacteristicName],
+    [validateToken, validateAdminAccess, verifyDuplicateCharacteristicName],
     catchAsync(CharacteristicController.add)
   );
   router.put(
     "/characteristics/:id",
-    [verifyDuplicateCharacteristicName],
+    [validateToken, validateAdminAccess, verifyDuplicateCharacteristicName],
     catchAsync(CharacteristicController.update)
   );
   router.delete(
     "/characteristics/:id",
+    [validateToken, validateAdminAccess],
     catchAsync(CharacteristicController.delete)
   );
 
   // Watchables endpoints.
   router.get(
     "",
-    // [validateToken, validateAdminAccess],
+    [validateToken, validateAdminAccess],
     catchAsync(watchableController.getAll)
   );
-  router.delete("/:id", catchAsync(watchableController.delete));
+  router.delete(
+    "/:id",
+    [validateToken, validateAdminAccess],
+    catchAsync(watchableController.delete)
+  );
 
   // Films endpoints.
-  router.get("/films", catchAsync(FilmController.getAll));
-  router.post("/films", catchAsync(FilmController.add));
-  router.put("/films/:id", catchAsync(FilmController.update));
-  // router.delete("/films/:id", catchAsync(FilmController.delete));
+  router.get(
+    "/films",
+    [validateToken, validateAdminAccess],
+    catchAsync(FilmController.getAll)
+  );
+  router.post(
+    "/films",
+    [validateToken, validateAdminAccess],
+    catchAsync(FilmController.add)
+  );
+  router.put(
+    "/films/:id",
+    [validateToken, validateAdminAccess],
+    catchAsync(FilmController.update)
+  );
 
   // Series endpoints.
-  router.get("/series", catchAsync(SerieController.getAll));
-  router.post("/series", catchAsync(SerieController.add));
-  router.put("/series/:id", catchAsync(SerieController.update));
-  // router.delete("/series/:id", catchAsync(SerieController.delete));
+  router.get(
+    "/series",
+    [validateToken, validateAdminAccess],
+    catchAsync(SerieController.getAll)
+  );
+  router.post(
+    "/series",
+    [validateToken, validateAdminAccess],
+    catchAsync(SerieController.add)
+  );
+  router.put(
+    "/series/:id",
+    [validateToken, validateAdminAccess],
+    catchAsync(SerieController.update)
+  );
 
   return router;
 };
