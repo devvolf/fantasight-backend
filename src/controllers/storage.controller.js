@@ -15,27 +15,24 @@ export default {
   getImage: async (req, res, next) => {
     const imageId = req.params.id;
 
-    const imagesStorageStream = dbConfig.getImagesStorageStream();
+    const imagesStorageBucket = dbConfig.getImagesStorageBucket();
 
-    imagesStorageStream
+    imagesStorageBucket
       .find({ _id: new Types.ObjectId(imageId) })
       .toArray(function (err, files) {
         const file = files[0];
 
-        // Check if file
         if (!file || file.length === 0) {
           return res.status(404).json({
             message: "No file exists",
           });
         }
 
-        // Check if image
         if (
           file.contentType === "image/jpeg" ||
           file.contentType === "image/png"
         ) {
-          // Read output to browser
-          var readstream = imagesStorageStream.openDownloadStream(
+          var readstream = imagesStorageBucket.openDownloadStream(
             new Types.ObjectId(imageId)
           );
           readstream.pipe(res);
@@ -58,30 +55,55 @@ export default {
   },
   getVideo: async (req, res, next) => {
     const videoId = req.params.id;
+    const { range } = req.headers;
 
-    const videosStorageStream = dbConfig.getVideosStorageStream();
+    if (!range) {
+      res.status(400).send("Range required");
+    }
 
-    videosStorageStream
+    const videosStorageBucket = dbConfig.getVideosStorageBucket();
+
+    videosStorageBucket
       .find({ _id: new Types.ObjectId(videoId) })
       .toArray(function (err, files) {
         const file = files[0];
 
-        // Check if file
         if (!file || file.length === 0) {
           return res.status(404).json({
             message: "No file exists",
           });
         }
 
-        // Check if image
-        if (
-          file.contentType === "video/mp4" ||
-          file.contentType === "video/avi"
-        ) {
-          // Read output to browser
-          var readstream = videosStorageStream.openDownloadStream(
-            new Types.ObjectId(videoId)
+        if (file.contentType === "video/mp4") {
+          const start = Number(range.replace(/\D/g, ""));
+          const end = file.length - 1;
+
+          // if (start >= file.length) {
+          //   res
+          //     .status(416)
+          //     .send(
+          //       "Requested range not satisfiable\n" +
+          //         start +
+          //         " >= " +
+          //         file.length
+          //     );
+          //   return;
+          // }
+
+          const headers = {
+            "Content-Range": `bytes ${start}-${end}/${file.length}`,
+            "Accept-Ranges": "bytes",
+            "Content-Length": file.length,
+            "Content-Type": "video/mp4",
+          };
+
+          res.writeHead(206, headers);
+
+          const readstream = videosStorageBucket.openDownloadStream(
+            new Types.ObjectId(videoId),
+            { start, end: end + 1 }
           );
+
           readstream.pipe(res);
         } else {
           res.status(404).json({

@@ -49,7 +49,7 @@ export default () => {
   // Watchables endpoints.
   router.get(
     "",
-    [validateToken, validateAdminAccess],
+    // [validateToken, validateAdminAccess],
     catchAsync(watchableController.getAll)
   );
   router.delete("/:id", catchAsync(watchableController.delete));

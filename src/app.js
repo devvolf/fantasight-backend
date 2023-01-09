@@ -17,7 +17,7 @@ const runApp = async () => {
   const app = express();
 
   const corsOptions = {
-    origin: "http://localhost:4200",
+    origin: ["http://localhost:4200", "http://localhost:4000"],
   };
 
   app.use(cors(corsOptions));

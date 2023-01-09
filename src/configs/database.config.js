@@ -13,8 +13,8 @@ const databaseUrl = `mongodb://${user}:${password}@${host}:${port}/${dbName}?aut
 const imagesBucketName = "images";
 const videosBucketName = "videos";
 
-let imagesStorageStream;
-let videosStorageStream;
+let imagesStorageBucket;
+let videosStorageBucket;
 
 const imagesStorage = new GridFsStorage({
   url: databaseUrl,
@@ -57,10 +57,10 @@ const connectToDatabase = async () => {
     const connection = mongoose.createConnection(databaseUrl);
 
     connection.once("open", () => {
-      imagesStorageStream = new mongoose.mongo.GridFSBucket(connection.db, {
+      imagesStorageBucket = new mongoose.mongo.GridFSBucket(connection.db, {
         bucketName: imagesBucketName,
       });
-      videosStorageStream = new mongoose.mongo.GridFSBucket(connection.db, {
+      videosStorageBucket = new mongoose.mongo.GridFSBucket(connection.db, {
         bucketName: videosBucketName,
       });
     });
@@ -77,12 +77,12 @@ const connectToDatabase = async () => {
   }
 };
 
-const getImagesStorageStream = () => {
-  return imagesStorageStream;
+const getImagesStorageBucket = () => {
+  return imagesStorageBucket;
 };
 
-const getVideosStorageStream = () => {
-  return videosStorageStream;
+const getVideosStorageBucket = () => {
+  return videosStorageBucket;
 };
 
 export default {
@@ -90,8 +90,8 @@ export default {
   connectToDatabase,
   imagesBucketName,
   imagesStorage,
-  getImagesStorageStream,
+  getImagesStorageBucket,
   videosBucketName,
   videosStorage,
-  getVideosStorageStream,
+  getVideosStorageBucket,
 };
